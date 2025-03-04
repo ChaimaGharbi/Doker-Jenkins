@@ -7,16 +7,19 @@ pipeline {
     
     environment {
         DOCKER_IMAGE = 'ChaimaGharbi/app'
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
         DOCKERHUB_CREDENTIALS = credentials('c9737c11-336f-4078-9eb8-838cc384f295')
     }
     
     stages {
+      stage('Debug Jenkins Env') {
+    steps {
+        sh 'env | grep BUILD'
+    }
+}
         stage('Checkout') {
             steps {
-                // Vérifiez l'URL exacte de votre dépôt
-                git branch: 'main', 
-                    url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
+                url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
             }
         }
         
