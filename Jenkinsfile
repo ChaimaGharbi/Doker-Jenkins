@@ -65,9 +65,12 @@ pipeline {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    withCredentials([usernameColonPassword(credentialsId: '71f95ee8-3d30-4471-bba3-5f3d0a970b3d', 
+                    withCredentials([usernamePassword(credentialsId: '71f95ee8-3d30-4471-bba3-5f3d0a970b3d', 
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASS')]) {
+
+                        echo "Docker Username: $DOCKER_USER"
+                        echo "Docker Password: $DOCKER_PASS"
 
                         sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
 
