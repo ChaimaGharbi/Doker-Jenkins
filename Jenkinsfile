@@ -6,27 +6,20 @@ pipeline {
     }
     
     environment {
-        DOCKER_IMAGE = 'ChaimaGharbi/app'
+        DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
         DOCKERHUB_CREDENTIALS = credentials('9f7142ad-0693-4e46-b021-9e4ed4ffe127')
     }
 
     stages {
-        stage('Test Docker Access') {
-            steps {
-                script {
-                    echo 'Running: Test Docker Access'
-                    sh 'sudo docker --version'
-                }
-            }
-        }
-
-        stage('Debug Jenkins Env') {
-            steps {
-                echo 'Running: Debug Jenkins Environment Variables'
-                sh 'env | grep BUILD'
-            }
-        }
+        // stage('Test Docker Access') {
+        //     steps {
+        //         script {
+        //             echo 'Running: Test Docker Access'
+        //             sh 'sudo docker --version'
+        //         }
+        //     }
+        // }
 
         stage('Checkout') {
             steps {
