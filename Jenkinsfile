@@ -56,7 +56,7 @@ pipeline {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    sh 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .'
                 }
             }
         }
