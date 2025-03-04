@@ -8,6 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
+        DOCKER_CREDENTIALS_ID = '71f95ee8-3d30-4471-bba3-5f3d0a970b3d'
     }
 
     stages {
@@ -65,13 +66,13 @@ pipeline {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    withCredentials([usernamePassword(credentialsId: '71f95ee8-3d30-4471-bba3-5f3d0a970b3d', 
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASS')]) {
 
                         sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
 
-                        docker.withRegistry('https://index.docker.io/v1/', '71f95ee8-3d30-4471-bba3-5f3d0a970b3d') {
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                             dockerImage.push()
                             dockerImage.push('latest')
                         }
