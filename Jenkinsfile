@@ -57,7 +57,7 @@ pipeline {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    sh 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .'
+                    dockerImage = sh(script: 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .', returnStdout: true).trim()
                 }
             }
         }
@@ -71,10 +71,10 @@ pipeline {
                         passwordVariable: 'DOCKER_PASS')]) {
                         sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
                         docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                            dockerImage.push()
-                            dockerImage.push('latest')
+                            sh "sudo docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                            sh "sudo docker push ${DOCKER_IMAGE}:latest"
                         }
-                    }
+                        }
                 }
             }
         }
