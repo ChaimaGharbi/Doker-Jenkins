@@ -8,14 +8,15 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKER_CREDENTIALS_ID = 'dc0dbb13-5823-4b08-a30d-fd43560c76d0'
+        DOCKER_CREDENTIALS_ID = 'docker-credentials'
     }
 
     stages {
         stage('Checkout') {
             steps {
                 echo 'Running: Checkout Repository'
-                git branch: 'main', url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
+                git branch: 'main',
+                url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
             }
         }
 
@@ -61,26 +62,18 @@ pipeline {
             }
         }
 
-        stage('Login to Docker Hub') {
+        stage('Push to Docker Hub') {
             steps {
-                echo 'Running: Login to Docker Hub'
+                echo 'Running: Push to Docker Hub'
                 script {
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID,
                         usernameVariable: 'DOCKER_USER',
                         passwordVariable: 'DOCKER_PASS')]) {
                         sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
+                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                            dockerImage.push()
+                            dockerImage.push('latest')
                         }
-                }
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                echo 'Running: Push to Docker Hub'
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        dockerImage.push()
-                        dockerImage.push('latest')
                     }
                 }
             }
