@@ -3,8 +3,9 @@ FROM jenkins/jenkins:latest
 USER root
 RUN apt-get update \
       && apt-get install -y sudo \
-      && rm -rf /var/lib/apt/lists/*
-
+      && apt install -y python3 python3-venv python3-pip \
+      && rm -rf /var/lib/apt/lists/* 
+      
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER jenkins
