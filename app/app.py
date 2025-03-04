@@ -6,7 +6,7 @@ app = Flask(__name__)
 def hello_world():
   return jsonify({
     "message": "Bienvenue sur mon application Devops!",
-    "version": "1.0.0" 
+    "version": "1.0.5" 
   })
   
   
