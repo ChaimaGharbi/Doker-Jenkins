@@ -57,7 +57,7 @@ pipeline {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    dockerImage = sh(script: 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .', returnStdout: true).trim()
+                    dockerImage = sh(script: 'sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -t ${DOCKER_IMAGE}:latest .', returnStdout: true).trim()
                 }
             }
         }
