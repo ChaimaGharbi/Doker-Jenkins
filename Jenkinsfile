@@ -69,9 +69,6 @@ pipeline {
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASS')]) {
 
-                        echo "Docker Username: $DOCKER_USER"
-                        echo "Docker Password: $DOCKER_PASS"
-
                         sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
 
                         docker.withRegistry('https://index.docker.io/v1/', '71f95ee8-3d30-4471-bba3-5f3d0a970b3d') {
