@@ -11,7 +11,9 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('c9737c11-336f-4078-9eb8-838cc384f295')
     }
 
+    
     stages {
+
         stage('Test Docker Access') {
             steps {
                 script {
@@ -19,9 +21,6 @@ pipeline {
                 }
             }
         }
-    }
-    
-    stages {
       stage('Debug Jenkins Env') {
     steps {
         sh 'env | grep BUILD'
