@@ -4,23 +4,13 @@ pipeline {
     triggers {
         githubPush()
     }
-    
+
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKERHUB_CREDENTIALS = credentials('9f7142ad-0693-4e46-b021-9e4ed4ffe127')
     }
 
     stages {
-        // stage('Test Docker Access') {
-        //     steps {
-        //         script {
-        //             echo 'Running: Test Docker Access'
-        //             sh 'sudo docker --version'
-        //         }
-        //     }
-        // }
-
         stage('Checkout') {
             steps {
                 echo 'Running: Checkout Repository'
@@ -82,9 +72,16 @@ pipeline {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', '9f7142ad-0693-4e46-b021-9e4ed4ffe127') {
-                        dockerImage.push()
-                        dockerImage.push('latest')
+                    withCredentials([usernamePassword(credentialsId: '9f7142ad-0693-4e46-b021-9e4ed4ffe127', 
+                        usernameVariable: 'DOCKER_USER', 
+                        passwordVariable: 'DOCKER_PASS')]) {
+
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+
+                        docker.withRegistry('https://index.docker.io/v1/', '9f7142ad-0693-4e46-b021-9e4ed4ffe127') {
+                            dockerImage.push()
+                            dockerImage.push('latest')
+                        }
                     }
                 }
             }
