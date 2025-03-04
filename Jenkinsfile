@@ -10,6 +10,16 @@ pipeline {
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
         DOCKERHUB_CREDENTIALS = credentials('c9737c11-336f-4078-9eb8-838cc384f295')
     }
+
+    stages {
+        stage('Test Docker Access') {
+            steps {
+                script {
+                    sh 'docker --version'
+                }
+            }
+        }
+    }
     
     stages {
       stage('Debug Jenkins Env') {
