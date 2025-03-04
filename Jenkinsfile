@@ -84,9 +84,9 @@ pipeline {
     
     post {
         always {
+          script {
           node {
-            script {
-                // Utiliser cleanWs() dans un bloc script
+            
                 deleteDir()
                 sh 'docker logout || true'
             }
