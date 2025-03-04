@@ -17,7 +17,7 @@ pipeline {
         stage('Test Docker Access') {
             steps {
                 script {
-                    sh 'docker --version'
+                    sh 'sudo docker --version'
                 }
             }
         }
