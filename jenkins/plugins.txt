@@ -1,0 +1,9 @@
+docker-workflow
+git
+credentials-binding
+docker-plugin
+github
+blueocean
+pipeline-github
+build-timeout
+junit

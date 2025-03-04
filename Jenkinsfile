@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'ChaimaGharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKERHUB_CREDENTIALS = credentials('c9737c11-336f-4078-9eb8-838cc384f295')
+        DOCKERHUB_CREDENTIALS = credentials('9f7142ad-0693-4e46-b021-9e4ed4ffe127')
     }
 
     
@@ -82,7 +82,7 @@ pipeline {
             steps {
                 script {
                     // Utilisez l'ID de credentials correct
-                    docker.withRegistry('https://index.docker.io/v1/', 'c9737c11-336f-4078-9eb8-838cc384f295') {
+                    docker.withRegistry('https://index.docker.io/v1/', '9f7142ad-0693-4e46-b021-9e4ed4ffe127') {
                         dockerImage.push()
                         dockerImage.push('latest')
                     }
