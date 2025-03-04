@@ -56,7 +56,7 @@ pipeline {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    sh 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .'
                 }
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Running: Security Scan'
-                sh "trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
+                sh "sudo trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
             }
         }
         
@@ -72,13 +72,13 @@ pipeline {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    withCredentials([usernamePassword(credentialsId: '71f95ee8-3d30-4471-bba3-5f3d0a970b3d	', 
+                    withCredentials([usernamePassword(credentialsId: '71f95ee8-3d30-4471-bba3-5f3d0a970b3d', 
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASS')]) {
 
-                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
 
-                        docker.withRegistry('https://index.docker.io/v1/', '71f95ee8-3d30-4471-bba3-5f3d0a970b3d	') {
+                        docker.withRegistry('https://index.docker.io/v1/', '71f95ee8-3d30-4471-bba3-5f3d0a970b3d') {
                             dockerImage.push()
                             dockerImage.push('latest')
                         }
@@ -94,7 +94,7 @@ pipeline {
             script {
                 node {
                     deleteDir()
-                    sh 'docker logout || true'
+                    sh 'sudo docker logout || true'
                 }
             }
         }
