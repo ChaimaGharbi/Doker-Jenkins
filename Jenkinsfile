@@ -19,6 +19,7 @@ pipeline {
 }
         stage('Checkout') {
             steps {
+                git branch: 'main',
                 url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
             }
         }
