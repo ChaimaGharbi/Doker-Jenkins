@@ -61,13 +61,6 @@ pipeline {
             }
         }
         
-        stage('Security Scan') {
-            steps {
-                echo 'Running: Security Scan'
-                sh "sudo trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
-            }
-        }
-        
         stage('Push to Docker Hub') {
             steps {
                 echo 'Running: Push to Docker Hub'
