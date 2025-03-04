@@ -11,23 +11,26 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('9f7142ad-0693-4e46-b021-9e4ed4ffe127')
     }
 
-    
     stages {
-
         stage('Test Docker Access') {
             steps {
                 script {
+                    echo 'Running: Test Docker Access'
                     sh 'sudo docker --version'
                 }
             }
         }
-      stage('Debug Jenkins Env') {
-    steps {
-        sh 'env | grep BUILD'
-    }
-}
+
+        stage('Debug Jenkins Env') {
+            steps {
+                echo 'Running: Debug Jenkins Environment Variables'
+                sh 'env | grep BUILD'
+            }
+        }
+
         stage('Checkout') {
             steps {
+                echo 'Running: Checkout Repository'
                 git branch: 'main',
                 url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
             }
@@ -35,6 +38,7 @@ pipeline {
         
         stage('Setup Python Environment') {
             steps {
+                echo 'Running: Setup Python Virtual Environment'
                 sh '''
                     python3 -m venv venv
                     . venv/bin/activate
@@ -46,6 +50,7 @@ pipeline {
         
         stage('Lint & Static Analysis') {
             steps {
+                echo 'Running: Lint & Static Analysis'
                 sh '''
                     . venv/bin/activate
                     flake8 app/ --count --select=E9,F63,F7,F82
@@ -55,6 +60,7 @@ pipeline {
         
         stage('Run Tests') {
             steps {
+                echo 'Running: Run Tests'
                 sh '''
                     . venv/bin/activate
                     coverage run -m pytest app/tests/
@@ -65,6 +71,7 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
+                echo 'Running: Build Docker Image'
                 script {
                     dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
@@ -73,15 +80,15 @@ pipeline {
         
         stage('Security Scan') {
             steps {
-                // Assurez-vous que Trivy est installé
+                echo 'Running: Security Scan'
                 sh "trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
             }
         }
         
         stage('Push to Docker Hub') {
             steps {
+                echo 'Running: Push to Docker Hub'
                 script {
-                    // Utilisez l'ID de credentials correct
                     docker.withRegistry('https://index.docker.io/v1/', '9f7142ad-0693-4e46-b021-9e4ed4ffe127') {
                         dockerImage.push()
                         dockerImage.push('latest')
@@ -93,21 +100,21 @@ pipeline {
     
     post {
         always {
-          script {
-          node {
-            
-                deleteDir()
-                sh 'docker logout || true'
+            echo 'Running: Cleanup'
+            script {
+                node {
+                    deleteDir()
+                    sh 'docker logout || true'
+                }
             }
-          }
         }
         
         success {
-            echo 'Déploiement réussi !'
+            echo 'Pipeline Succeeded: Deployment completed!'
         }
         
         failure {
-            echo 'Échec du pipeline'
+            echo 'Pipeline Failed: Check the logs for errors.'
         }
     }
 }
