@@ -15,11 +15,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Running: Checkout Repository'
-                git branch: 'main',
-                url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
+                git branch: 'main', url: 'https://github.com/ChaimaGharbi/Doker-Jenkins.git'
             }
         }
-        
+
         stage('Setup Python Environment') {
             steps {
                 echo 'Running: Setup Python Virtual Environment'
@@ -31,7 +30,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Lint & Static Analysis') {
             steps {
                 echo 'Running: Lint & Static Analysis'
@@ -41,7 +40,7 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Run Tests') {
             steps {
                 echo 'Running: Run Tests'
@@ -52,36 +51,42 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    sh 'sudo docker build -t "${DOCKER_IMAGE}:${DOCKER_TAG}" .'
+                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
-        
+
+        stage('Login to Docker Hub') {
+            steps {
+                echo 'Running: Login to Docker Hub'
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID,
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
+                        }
+                }
+            }
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, 
-                        usernameVariable: 'DOCKER_USER', 
-                        passwordVariable: 'DOCKER_PASS')]) {
-
-                        sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
-
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                            dockerImage.push()
-                            dockerImage.push('latest')
-                        }
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push()
+                        dockerImage.push('latest')
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
             echo 'Running: Cleanup'
@@ -92,11 +97,11 @@ pipeline {
                 }
             }
         }
-        
+
         success {
             echo 'Pipeline Succeeded: Deployment completed!'
         }
-        
+
         failure {
             echo 'Pipeline Failed: Check the logs for errors.'
         }
