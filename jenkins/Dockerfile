@@ -1,15 +1,20 @@
 FROM jenkins/jenkins:latest
 
 USER root
+# Install sudo, Python, pip, and Docker
 RUN apt-get update \
-      && apt-get install -y sudo \
-      && apt install -y python3 python3-venv python3-pip \
-      && rm -rf /var/lib/apt/lists/* 
-      
+    && apt-get install -y sudo \
+    && apt install -y python3 python3-venv python3-pip \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -sSL https://get.docker.com/ | sh \
+    && usermod -aG docker jenkins  # Add jenkins user to docker group
+
+# Allow jenkins user to run sudo without a password prompt
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER jenkins
-COPY plugins.txt /usr/share/jenkins/plugins.txt
 
-# Install plugins using the jenkins-plugin-cli
+# Install Jenkins plugins
+COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/plugins.txt
+
