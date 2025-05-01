@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKER_CREDENTIALS_ID = 'dc0dbb13-5823-4b08-a30d-fd43560c76d0'
+        DOCKER_CREDENTIALS_ID = '61caa30f-a4ab-4359-a067-0632a5007754'
     }
 
     stages {
@@ -96,7 +96,7 @@ pipeline {
         }
 
         failure {
-            echo 'Pipeline Failed: Check the logs for errors.'
+            echo 'Pipeline Failed: Check the logs for errors..'
         }
     }
 }
