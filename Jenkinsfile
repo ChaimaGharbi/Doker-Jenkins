@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKER_CREDENTIALS_ID = 'ecf876e4-ddd8-4109-b779-0cfe27dac0f1'
+        DOCKER_CREDENTIALS_ID = '5f1f6a1d-3471-47a7-b1d6-12aa0ff5746c'
     }
 
     stages {
