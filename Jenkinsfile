@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKER_CREDENTIALS_ID = '0a2a4fb8-d635-4dd2-a72f-3c776ee04e81'
+        DOCKER_CREDENTIALS_ID = '161d3984-380a-4036-a8c4-36a2a4eb8153'
     }
 
     stages {
@@ -82,6 +82,7 @@ pipeline {
         stage('Deploy on Kubernetes') {
             steps {
                 script {
+                    sh 'kubectl config use-context minikube'
                     sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
                     sh 'kubectl apply -f k8s/service.yaml --validate=false'
                 }

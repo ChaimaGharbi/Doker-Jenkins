@@ -14,6 +14,9 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && chmod +x kubectl \
     && mv kubectl /usr/local/bin/
 
+# Create .kube directory for jenkins user
+RUN mkdir -p /var/jenkins_home/.kube && chown -R jenkins:jenkins /var/jenkins_home/.kube
+
 # Allow jenkins user to run sudo without a password prompt
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
