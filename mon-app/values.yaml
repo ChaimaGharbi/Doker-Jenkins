@@ -48,7 +48,7 @@ serviceAccount:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
+containerPort: 80
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
@@ -56,7 +56,7 @@ service:
   # This sets the port that the service will expose
   port: 8081  
   # This sets the target port inside the container (if it’s different from the service port)
-  targetPort: 8081 
+  targetPort: 80 
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
