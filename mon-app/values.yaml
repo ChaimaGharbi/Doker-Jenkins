@@ -48,7 +48,7 @@ serviceAccount:
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-containerPort: 80
+containerPort: 5000
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
@@ -56,7 +56,7 @@ service:
   # This sets the port that the service will expose
   port: 8081  
   # This sets the target port inside the container (if it’s different from the service port)
-  targetPort: 80 
+  targetPort: 5000 
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -91,11 +91,16 @@ resources: {}
 livenessProbe:
   httpGet:
     path: /
-    port: http
+    port: 5000  # Match your app's port
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
 readinessProbe:
   httpGet:
     path: /
-    port: http
+    port: 5000  # Match your app's port
+  initialDelaySeconds: 5
+  periodSeconds: 10
 
 # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
