@@ -86,10 +86,19 @@ pipeline {
                 }
             }
         }
-        stage('Deploy with Helm') {
+        // stage('Deploy with Helm') {
+        //     steps {
+        //         script {
+        //             sh 'helm upgrade --install mon-app $HELM_CHART_PATH'
+        //         }
+        //     }
+        // }
+        stage('Deploy on Kubernetes') {
             steps {
                 script {
-                    sh 'helm upgrade --install mon-app $HELM_CHART_PATH'
+                    sh 'kubectl config use-context minikube'
+                    sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
+                    sh 'kubectl apply -f k8s/service.yaml --validate=false'
                 }
             }
         }

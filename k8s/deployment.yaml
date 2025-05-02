@@ -16,4 +16,4 @@ spec:
         - name: mon-app
           image: chaimagharbi/app
           ports:
-            - containerPort: 80
+            - containerPort: 5000
