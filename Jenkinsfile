@@ -8,7 +8,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'chaimagharbi/app'
         DOCKER_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
-        DOCKER_CREDENTIALS_ID = '5f1f6a1d-3471-47a7-b1d6-12aa0ff5746c'
+        DOCKER_CREDENTIALS_ID = 'd0dac775-94d4-4ddd-8dc3-fdc7d766b7d7'
+        HELM_CHART_PATH = './mon-app'
     }
 
     stages {
@@ -78,13 +79,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy on Kubernetes') {
+        stage('Deploy with Helm') {
             steps {
                 script {
-                    sh 'kubectl config use-context minikube'
-                    sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
-                    sh 'kubectl apply -f k8s/service.yaml --validate=false'
+                    sh 'helm upgrade --install mon-app $HELM_CHART_PATH'
                 }
             }
         }
