@@ -18,7 +18,7 @@ class TestApp(unittest.TestCase):
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["status"], "healthy")
-        
+
 
 if __name__ == "__main__":
-  unittest.main()
+    unittest.main()
