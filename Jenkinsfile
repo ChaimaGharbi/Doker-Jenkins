@@ -86,22 +86,23 @@ pipeline {
                 }
             }
         }
-        // stage('Deploy with Helm') {
-        //     steps {
-        //         script {
-        //             sh 'helm upgrade --install mon-app $HELM_CHART_PATH'
-        //         }
-        //     }
-        // }
-        stage('Deploy on Kubernetes') {
+        stage('Deploy with Helm') {
             steps {
                 script {
-                    sh 'kubectl config use-context minikube'
-                    sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
-                    sh 'kubectl apply -f k8s/service.yaml --validate=false'
+                    sh 'helm upgrade --install mon-app $HELM_CHART_PATH'
                 }
             }
         }
+
+    // stage('Deploy on Kubernetes') {
+    //     steps {
+    //         script {
+    //             sh 'kubectl config use-context minikube'
+    //             sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
+    //             sh 'kubectl apply -f k8s/service.yaml --validate=false'
+    //         }
+    //     }
+    // }
     }
 
     post {
