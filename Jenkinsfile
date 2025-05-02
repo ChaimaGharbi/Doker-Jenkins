@@ -58,7 +58,10 @@ pipeline {
             steps {
                 echo 'Running: Build Docker Image'
                 script {
-                    dockerImage = sh(script: 'sudo docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -t ${DOCKER_IMAGE}:latest .', returnStdout: true).trim()
+                    dockerImage = docker.build(
+                        "${DOCKER_IMAGE}",
+                        "--tag ${DOCKER_IMAGE}:${DOCKER_TAG} --tag ${DOCKER_IMAGE}:latest ."
+                    )
                 }
             }
         }
@@ -67,18 +70,14 @@ pipeline {
             steps {
                 echo 'Running: Push to Docker Hub'
                 script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID,
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS')]) {
-                        sh 'echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin'
-                        docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                            sh "sudo docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                            sh "sudo docker push ${DOCKER_IMAGE}:latest"
-                        }
-                        }
+                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push("${DOCKER_TAG}")
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
+
         stage('Deploy with Helm') {
             steps {
                 script {
